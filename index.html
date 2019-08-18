@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Homepage</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <link rel="icon" href="">
+    <link rel="stylesheet" href="vendor/bootstrap.css">
+    <style type="text/css">
+
+      html {
+        overflow-y: scroll;
+        height: 100%;
+        width: 100%
+      }
+
+    </style>
+  </head>
+
+  <body onbeforeunload="exitFunc()">
+
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <br>
+          <h1>Fallout 4 Weapon Stats</h1>
+          <hr>
+          <p>
+            Choose weapon:&nbsp;
+            <select id="weaponChoice" onchange="newWeapon()">
+              <option value="none">None</option>
+            </select>
+          </p>
+          <div id="modDivs"></div>
+        </div>
+        <div class="col">
+          <br>
+          <p>This tool was created, originally, out of necessity. Searching the internet,  I couldn't find anything that allowed for these calculations. <br>Weapon files take a while to put together, due to the mods having different effects on weapons. Since there is no consistency, everything is manual. If there is a specific weapon you would like to be added, email me it's name, and I'll get on it as soon as possible.</p>
+        </div>
+      </div>
+    </div>
+
+    <script src="vendor/jquery-3.4.1.min.js"> </script>
+    <script src="vendor/bootstrap.bundle.js"> </script>
+    <script src="vendor/pouchdb-7.0.0.js"> </script>
+    <script>
+
+      var globaldoc;
+
+      var remote = new PouchDB('https://3b70a24c-52f8-4c44-b528-8b5c3cf7f959-bluemix.cloudantnosqldb.appdomain.cloud/fo4weapons');
+
+      var local = new PouchDB('fo4weapons');
+
+      local.replicate.from(remote).then(function(){
+        listWeapons();
+      });
+
+      function listWeapons(){
+        var drop = document.getElementById('weaponChoice');
+        local.allDocs({include_docs : true}, function(err,response){
+          if(err){
+            console.log(err);
+          }
+          else{
+            for(i=0;i<response.rows.length;i++){
+              var id = response.rows[i].id;
+              var name = response.rows[i].doc.name;
+              var option = document.createElement('option');
+              option.text = name;
+              option.value = id;
+              drop.add(option);
+            }
+          }
+        });
+      }
+
+      function newWeapon(){
+        document.getElementById('modDivs').innerHTML = '';
+        var weaponID = document.getElementById('weaponChoice').value;
+        var dropDiv = document.getElementById('modDivs');
+        local.get(weaponID).then(function(doc){
+          console.log(doc);
+          globaldoc = doc;
+          var mods = Object.entries(doc.modifications);
+          var keys = Object.keys(doc.modifications);
+          var baseObj = Object.keys(doc.base);
+          // CREATE READONLY INPUTS OF CURRENT VALUES
+          for(i=0;i<baseObj.length;i++){
+            var inp = document.createElement('input');
+            inp.setAttribute('value', doc.base[baseObj[i]]);
+            inp.setAttribute('id', baseObj[i]);
+            inp.setAttribute('readonly', true);
+            dropDiv.appendChild(inp);
+          }
+          // CREATE DROPDOWNS FOR MODS
+          for(k=0;k<keys.length;k++){
+            // CREATE SELECT ELEMENT
+            var selTemp = document.createElement('select');
+            // ASSIGN SELECT ID OF BARREL/MUZZLE/RECEIVER etc
+            selTemp.setAttribute('id', keys[k]);
+            selTemp.setAttribute('onchange', 'valChange(this.id, this.value)')
+            // LOOP THROUGH ALL ENTRIES IN THE FILE MODS
+            // DEFINE SOME VALUES FROM JSON
+            var currMod = doc.modifications[keys[k]];
+            var currModKeys = Object.keys(currMod);
+            var currModVals = Object.values(currMod);
+            // NOW ACTUALLY LOOP THROUGH ALL THE OPTIONS WITHIN THE MOD
+            for(v=0;v<currModKeys.length;v++){
+              var tempOpt = document.createElement('option');
+              tempOpt.innerHTML = currModKeys[v];
+              tempOpt.setAttribute('value', currModKeys[v]);
+              // ADD EACH ENTRY TO THE DROPDOWN CORRESPONDING WITH IT
+              selTemp.add(tempOpt);
+            }
+            // PUSH THE DROP
+            dropDiv.appendChild(selTemp);
+          }
+        });
+      }
+
+      function valChange(modId, modValue){
+        console.log(modId, modValue);
+        var temp1 = globaldoc.modifications[modId];
+        var temp2 = Object.keys(temp1);
+        var temp3 = Object.entries(temp1);
+        console.log(temp1, temp2, temp3);
+        var temp4 = temp2.indexOf(modValue);
+        console.log(temp4);
+        var temp5 = temp3[temp4];
+        console.log(temp5);
+      }
+
+      //for(c=0;c<keys.length;c++){
+
+        //      var tempOpt = document.createElement('option');
+
+          //    selTemp.add(tempOpt);
+         //   }
+
+    </script>
+  </body>
+</html>
