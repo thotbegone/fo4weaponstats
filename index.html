@@ -96,14 +96,15 @@
           for(k=0;k<keys.length;k++){
             // CREATE SELECT ELEMENT
             var selTemp = document.createElement('select');
-            // ASSIGN SELECT ID OF BARREL/MUZZLE/RECEIVER etc
-            selTemp.setAttribute('id', keys[k]);
-            selTemp.setAttribute('onchange', 'valChange(this.id, this.value)')
-            // LOOP THROUGH ALL ENTRIES IN THE FILE MODS
             // DEFINE SOME VALUES FROM JSON
             var currMod = doc.modifications[keys[k]];
             var currModKeys = Object.keys(currMod);
             var currModVals = Object.values(currMod);
+            // ASSIGN SELECT ID OF BARREL/MUZZLE/RECEIVER etc
+            selTemp.setAttribute('id', keys[k]);
+            selTemp.setAttribute('data-mod', currModKeys[0]);
+            selTemp.setAttribute('onchange', 'valChange(this.id, this.value, this.dataset.mod)')
+            // LOOP THROUGH ALL ENTRIES IN THE FILE MODS
             // NOW ACTUALLY LOOP THROUGH ALL THE OPTIONS WITHIN THE MOD
             for(v=0;v<currModKeys.length;v++){
               var tempOpt = document.createElement('option');
@@ -118,16 +119,57 @@
         });
       }
 
-      function valChange(modId, modValue){
-        console.log(modId, modValue);
+      async function valChange(modId, modValue, dataMod){
+        var proc = await subTractOld(modId, dataMod);
+        console.log('mod/value', modId, modValue);
         var temp1 = globaldoc.modifications[modId];
         var temp2 = Object.keys(temp1);
         var temp3 = Object.entries(temp1);
-        console.log(temp1, temp2, temp3);
+        console.log('temp123', temp1, temp2, temp3);
         var temp4 = temp2.indexOf(modValue);
         console.log(temp4);
         var temp5 = temp3[temp4];
         console.log(temp5);
+        console.log('looop start');
+        //start meat
+        console.log('temp1modvalue', temp1[modValue]);
+        var x = Object.keys(temp1[modValue]);
+        for(z=0;z<x.length;z++){
+          var tempArr = temp1[modValue];
+          if(document.getElementById(x[z]) == null){
+            console.log('null id');
+          }
+          else {
+            var y = x[z];
+            console.log('else', tempArr[z]);
+            document.getElementById(y).value = parseInt(document.getElementById(y).value) + parseInt(tempArr[z]);
+          }
+        }
+        //
+        document.getElementById(modId).dataset.mod = modValue;
+      }
+
+      function subTractOld(mod, data) {
+        console.log('subold:', mod, data);
+        var docMod = globaldoc.modifications[mod];
+        var modVal = docMod[data];
+        console.log('subold2', docMod, modVal);
+        var objKeys = Object.keys(modVal);
+        var objEntries = Object.entries(modVal);
+        console.log('objentries/keys', objKeys, objEntries)
+        for(i=0;i<objEntries.length;i++){
+          var tempId = objKeys[i];
+          if(document.getElementById(tempId) == null){
+            console.log('no element');
+          }
+          else {
+            console.log('reached else statement');
+            var tempVal = document.getElementById(tempId).value;
+            console.log('else statement', tempVal, modVal[objKeys[i]]);
+            document.getElementById(tempId).value = parseInt(tempVal) + (-1 * parseInt(modVal[objKeys[i]]));
+          }
+        }
+        return true;
       }
 
       //for(c=0;c<keys.length;c++){
@@ -136,6 +178,10 @@
 
           //    selTemp.add(tempOpt);
          //   }
+
+      function testID() {
+        console.log(document.getElementById('gay'));
+      }
 
     </script>
   </body>
