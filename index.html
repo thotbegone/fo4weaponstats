@@ -25,6 +25,7 @@
 
     <div class="container">
       <div class="row">
+
         <div class="col">
           <br>
           <h1>Fallout 4 Weapon Stats</h1>
@@ -35,12 +36,17 @@
               <option value="none">None</option>
             </select>
           </p>
+          <hr>
           <div id="modDivs"></div>
         </div>
+
         <div class="col">
           <br>
-          <p>This tool was created, originally, out of necessity. Searching the internet,  I couldn't find anything that allowed for these calculations. <br><br>Weapon files take a while to put together, due to all the mods having different effects on every weapon. Since there is no consistency, everything is manual.</p>
+          <p>
+            This tool was created, originally, out of necessity. Searching the internet,  I couldn't find anything that allowed for these calculations. <br><br>Weapon files take a while to put together, due to all the mods having different effects on every weapon. Since there is no consistency, everything is manual.
+          </p>
         </div>
+
       </div>
     </div>
 
@@ -60,6 +66,7 @@
       });
 
       function listWeapons(){
+        // LIST ALL THE WEAPONS IN THE DATABASE
         var drop = document.getElementById('weaponChoice');
         local.allDocs({include_docs : true}, function(err,response){
           if(err){
@@ -79,19 +86,22 @@
       }
 
       function newWeapon(){
+        // CLEAR DIV
         document.getElementById('modDivs').innerHTML = '';
         var weaponID = document.getElementById('weaponChoice').value;
         var dropDiv = document.getElementById('modDivs');
         local.get(weaponID).then(function(doc){
+          // SET GLOBALDOC WHICH IS USED BY OTHER FUNCTIONS
           globaldoc = doc;
           var mods = Object.entries(doc.modifications);
           var keys = Object.keys(doc.modifications);
           var baseObj = Object.keys(doc.base);
-          // CREATE READONLY INPUTS OF CURRENT VALUES
+          // CREATE READONLY INPUTS OF BASE VALUES
           for(i=0;i<baseObj.length;i++){
+            // CREATE A LOAD OF ELEMENTS DEPENDING ON DOCUMENT
+            // Thanks stackoverflow ( string[0].toUpperCase() + string.substring(1) )
             var tempdiv = document.createElement('div');
             tempdiv.setAttribute('class', 'customDiv');
-            // thanks stackoverflow string[0].toUpperCase() + string.substring(1)
             var lowercaseName = baseObj[i];
             var uppercaseName = lowercaseName[0].toUpperCase() + lowercaseName.substring(1);
             tempdiv.innerHTML = uppercaseName + ':&nbsp;';
@@ -118,16 +128,15 @@
             selTemp.setAttribute('id', keys[k]);
             selTemp.setAttribute('data-mod', currModKeys[0]);
             selTemp.setAttribute('onchange', 'valChange(this.id, this.value, this.dataset.mod)')
-            // LOOP THROUGH ALL ENTRIES IN THE FILE MODS
-            // NOW ACTUALLY LOOP THROUGH ALL THE OPTIONS WITHIN THE MOD
+            // LOOP THROUGH ALL ENTRIES IN THE MODS
             for(v=0;v<currModKeys.length;v++){
               var tempOpt = document.createElement('option');
               tempOpt.innerHTML = currModKeys[v];
               tempOpt.setAttribute('value', currModKeys[v]);
-              // ADD EACH ENTRY TO THE DROPDOWN CORRESPONDING WITH IT
+              // ADD EACH TO THE DIV
               selTemp.add(tempOpt);
             }
-            // PUSH THE DROP
+            // PUSH THE DROP/S
             custDiv.appendChild(selTemp);
             dropDiv.appendChild(custDiv);
           }
@@ -135,34 +144,37 @@
       }
 
       async function valChange(modId, modValue, dataMod){
+        // ASYNC FOR PEACE OF MIND THAT THE SUBTRACTION WILL COMPLETE BEFORE THE DATA-MOD TAG GETS UPDATED
         var proc = await subTractOld(modId, dataMod);
+        // GET VALUES FROM GLOBALDOC
         var weapPart = globaldoc.modifications[modId];
         var partMod = weapPart[modValue];
-        // start meat
-        // create list of keys
-        var x = Object.keys(partMod);
-        // loop thru all keys
-        for(z=0;z<x.length;z++){
-          // if key has corresponding element, do somethin
-          if(document.getElementById(x[z]) == null){
-            console.log('null id for', x[z]);
+        // CREATE LIST OF KEYS
+        var modKeys = Object.keys(partMod);
+        // LOOP THROUGH ALL KEYS
+        for(z=0;z<modKeys.length;z++){
+          // IF KEY HAS A CORRESPONDING ELEMENT, ADD VALUES
+          if(document.getElementById(modKeys[z]) == null){
+            console.log('null id for', modKeys[z]);
           }
           else {
-            var currVal = document.getElementById(x[z]).value;
-            var tempVal = parseFloat(currVal) + parseFloat(partMod[x[z]]);
-            document.getElementById(x[z]).value = Math.round(tempVal * 10) / 10;
+            var currVal = document.getElementById(modKeys[z]).value;
+            var tempVal = parseFloat(currVal) + parseFloat(partMod[modKeys[z]]);
+            // ROUND TO 1 DECIMAL PLACE
+            document.getElementById(modKeys[z]).value = Math.round(tempVal * 10) / 10;
           }
         }
+        // UPDATE DATA-MOD TO NEW MOD
        document.getElementById(modId).dataset.mod = modValue;
       }
 
       function subTractOld(part, mod) {
-        // get current globaldoc and select the part
+        // GET GLOBALDOC
         var docMod = globaldoc.modifications[part];
         var modVal = docMod[mod];
-        // get all keys. this will function as our list of elements to change
+        // GET KEYS
         var modKeys = Object.keys(modVal);
-        // loop through all values and subtract, same as past loop
+        // LOOP THROUGH VALUES, SAME AS LAST TIME
         for(i=0;i<modKeys.length;i++){
           if(document.getElementById(modKeys[i]) == null){
             console.log('no element for', modKeys[i]);
@@ -173,6 +185,7 @@
             document.getElementById(modKeys[i]).value = parseFloat(currVal) + (-1 * parseFloat(modVal[modKeys[i]]));
           }
         }
+        // RETURN TRUE TO SATISFY THE AWAIT
         return true;
       }
 
