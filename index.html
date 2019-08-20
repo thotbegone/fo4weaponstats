@@ -122,51 +122,44 @@
       async function valChange(modId, modValue, dataMod){
         var proc = await subTractOld(modId, dataMod);
         console.log('mod/value', modId, modValue);
-        var temp1 = globaldoc.modifications[modId];
-        var temp2 = Object.keys(temp1);
-        var temp3 = Object.entries(temp1);
-        console.log('temp123', temp1, temp2, temp3);
-        var temp4 = temp2.indexOf(modValue);
-        console.log(temp4);
-        var temp5 = temp3[temp4];
-        console.log(temp5);
-        console.log('looop start');
-        //start meat
-        console.log('temp1modvalue', temp1[modValue]);
-        var x = Object.keys(temp1[modValue]);
+        var weapPart = globaldoc.modifications[modId];
+        var partMod = weapPart[modValue];
+        console.log(weapPart, partMod);
+        console.log('loop start');
+        // start meat
+        // create list of keys
+        var x = Object.keys(partMod);
+        console.log(x);
+        // loop thru all keys
         for(z=0;z<x.length;z++){
-          var tempArr = temp1[modValue];
+          // if key has corresponding element, do somethin
           if(document.getElementById(x[z]) == null){
-            console.log('null id');
+            console.log('null id for', x[z]);
           }
           else {
-            var y = x[z];
-            console.log('else', tempArr[z]);
-            document.getElementById(y).value = parseInt(document.getElementById(y).value) + parseInt(tempArr[z]);
+            var currVal = document.getElementById(x[z]).value;
+            document.getElementById(x[z]).value = parseFloat(currVal) + parseFloat(partMod[x[z]]);
           }
         }
+
         //
-        document.getElementById(modId).dataset.mod = modValue;
+       document.getElementById(modId).dataset.mod = modValue;
       }
 
-      function subTractOld(mod, data) {
-        console.log('subold:', mod, data);
-        var docMod = globaldoc.modifications[mod];
-        var modVal = docMod[data];
-        console.log('subold2', docMod, modVal);
-        var objKeys = Object.keys(modVal);
-        var objEntries = Object.entries(modVal);
-        console.log('objentries/keys', objKeys, objEntries)
-        for(i=0;i<objEntries.length;i++){
-          var tempId = objKeys[i];
-          if(document.getElementById(tempId) == null){
-            console.log('no element');
+      function subTractOld(part, mod) {
+        // get current globaldoc and select the part
+        var docMod = globaldoc.modifications[part];
+        var modVal = docMod[mod];
+        var modKeys = Object.keys(modVal);
+        // loop through all values and subtract, same as past loop
+        for(i=0;i<modKeys.length;i++){
+          if(document.getElementById(modKeys[i]) == null){
+            console.log('no element for', modKeys[i]);
           }
           else {
-            console.log('reached else statement');
-            var tempVal = document.getElementById(tempId).value;
-            console.log('else statement', tempVal, modVal[objKeys[i]]);
-            document.getElementById(tempId).value = parseInt(tempVal) + (-1 * parseInt(modVal[objKeys[i]]));
+            console.log('reached else statement for', modKeys[i]);
+            var currVal = document.getElementById(modKeys[i]).value;
+            document.getElementById(modKeys[i]).value = parseFloat(currVal) + (-1 * parseFloat(modVal[modKeys[i]]));
           }
         }
         return true;
