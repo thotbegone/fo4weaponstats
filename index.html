@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Homepage</title>
+    <title>Fo4 Weapon Stats</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
-    <link rel="icon" href="">
+    <link rel="icon" href="assets/favicon.png">
     <link rel="stylesheet" href="vendor/bootstrap.css">
     <style type="text/css">
 
@@ -92,7 +92,7 @@
             var lowercaseName = baseObj[i];
             console.log(baseObj[i])
             var uppercaseName = lowercaseName[0].toUpperCase() + lowercaseName.substring(1);
-            tempdiv.innerHTML = uppercaseName;
+            tempdiv.innerHTML = uppercaseName + ':&nbsp;';
             var inp = document.createElement('input');
             inp.setAttribute('value', doc.base[baseObj[i]]);
             inp.setAttribute('id', baseObj[i]);
