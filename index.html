@@ -40,6 +40,7 @@
         <div class="col">
           <br>
           <h1>Fallout 4 Weapon Stats</h1>
+          <p><small>Please note, some weapons add radiation or elemental damage. This will be listed in the description at some point. All damage is combined for now, save for radiation, since it doesn't deal direct damage.</small></p>
           <hr>
           <p>
             Weapon:&nbsp;
@@ -72,6 +73,8 @@
       var remote = new PouchDB('https://3b70a24c-52f8-4c44-b528-8b5c3cf7f959-bluemix.cloudantnosqldb.appdomain.cloud/fo4weapons');
 
       var local = new PouchDB('fo4weapons');
+
+      // After declaring databases, list all the weapons
 
       local.replicate.from(remote).then(function(){
         listWeapons();
