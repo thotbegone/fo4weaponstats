@@ -30,7 +30,7 @@
           <h1>Fallout 4 Weapon Stats</h1>
           <hr>
           <p>
-            Choose weapon:&nbsp;
+            Weapon:&nbsp;
             <select id="weaponChoice" onchange="newWeapon()">
               <option value="none">None</option>
             </select>
@@ -83,7 +83,6 @@
         var weaponID = document.getElementById('weaponChoice').value;
         var dropDiv = document.getElementById('modDivs');
         local.get(weaponID).then(function(doc){
-          console.log(doc);
           globaldoc = doc;
           var mods = Object.entries(doc.modifications);
           var keys = Object.keys(doc.modifications);
@@ -94,7 +93,6 @@
             tempdiv.setAttribute('class', 'customDiv');
             // thanks stackoverflow string[0].toUpperCase() + string.substring(1)
             var lowercaseName = baseObj[i];
-            console.log(baseObj[i])
             var uppercaseName = lowercaseName[0].toUpperCase() + lowercaseName.substring(1);
             tempdiv.innerHTML = uppercaseName + ':&nbsp;';
             var inp = document.createElement('input');
@@ -107,7 +105,6 @@
           // CREATE DROPDOWNS FOR MODS
           for(k=0;k<keys.length;k++){
             // CREATE CUSTOM DIV
-            console.log('forlooop', keys[k]);
             var custDiv = document.createElement('div');
             custDiv.setAttribute('class', 'customDiv');
             custDiv.innerHTML = keys[k] + ':&nbsp;';
@@ -139,15 +136,11 @@
 
       async function valChange(modId, modValue, dataMod){
         var proc = await subTractOld(modId, dataMod);
-        console.log('mod/value', modId, modValue);
         var weapPart = globaldoc.modifications[modId];
         var partMod = weapPart[modValue];
-        console.log(weapPart, partMod);
-        console.log('loop start');
         // start meat
         // create list of keys
         var x = Object.keys(partMod);
-        console.log(x);
         // loop thru all keys
         for(z=0;z<x.length;z++){
           // if key has corresponding element, do somethin
@@ -159,8 +152,6 @@
             document.getElementById(x[z]).value = parseFloat(parseFloat(currVal).toPrecision(4)) + parseFloat(parseFloat(partMod[x[z]]).toPrecision(4));
           }
         }
-
-        //
        document.getElementById(modId).dataset.mod = modValue;
       }
 
@@ -182,10 +173,6 @@
           }
         }
         return true;
-      }
-
-      function testID() {
-        console.log(document.getElementById('gay'));
       }
 
     </script>
