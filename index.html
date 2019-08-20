@@ -149,7 +149,8 @@
           }
           else {
             var currVal = document.getElementById(x[z]).value;
-            document.getElementById(x[z]).value = parseFloat(parseFloat(currVal).toPrecision(4)) + parseFloat(parseFloat(partMod[x[z]]).toPrecision(4));
+            var tempVal = parseFloat(currVal) + parseFloat(partMod[x[z]]);
+            document.getElementById(x[z]).value = Math.round(tempVal * 10) / 10;
           }
         }
        document.getElementById(modId).dataset.mod = modValue;
