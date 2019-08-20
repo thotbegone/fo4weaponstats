@@ -86,11 +86,19 @@
           var baseObj = Object.keys(doc.base);
           // CREATE READONLY INPUTS OF CURRENT VALUES
           for(i=0;i<baseObj.length;i++){
+            var tempdiv = document.createElement('div');
+            tempdiv.setAttribute('class', 'customDiv');
+            // thanks stackoverflow string[0].toUpperCase() + string.substring(1)
+            var lowercaseName = baseObj[i];
+            console.log(baseObj[i])
+            var uppercaseName = lowercaseName[0].toUpperCase() + lowercaseName.substring(1);
+            tempdiv.innerHTML = uppercaseName;
             var inp = document.createElement('input');
             inp.setAttribute('value', doc.base[baseObj[i]]);
             inp.setAttribute('id', baseObj[i]);
             inp.setAttribute('readonly', true);
-            dropDiv.appendChild(inp);
+            tempdiv.appendChild(inp);
+            dropDiv.appendChild(tempdiv);
           }
           // CREATE DROPDOWNS FOR MODS
           for(k=0;k<keys.length;k++){
@@ -138,7 +146,7 @@
           }
           else {
             var currVal = document.getElementById(x[z]).value;
-            document.getElementById(x[z]).value = parseFloat(currVal) + parseFloat(partMod[x[z]]);
+            document.getElementById(x[z]).value = parseFloat(parseFloat(currVal).toPrecision(4)) + parseFloat(parseFloat(partMod[x[z]]).toPrecision(4));
           }
         }
 
@@ -150,6 +158,7 @@
         // get current globaldoc and select the part
         var docMod = globaldoc.modifications[part];
         var modVal = docMod[mod];
+        // get all keys. this will function as our list of elements to change
         var modKeys = Object.keys(modVal);
         // loop through all values and subtract, same as past loop
         for(i=0;i<modKeys.length;i++){
@@ -164,13 +173,6 @@
         }
         return true;
       }
-
-      //for(c=0;c<keys.length;c++){
-
-        //      var tempOpt = document.createElement('option');
-
-          //    selTemp.add(tempOpt);
-         //   }
 
       function testID() {
         console.log(document.getElementById('gay'));
