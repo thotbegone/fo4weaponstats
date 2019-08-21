@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="vendor/bootstrap.css">
     <style type="text/css">
 
+      @font-face {
+        font-family: overseer;
+        src: url(assets/overseer.otf);
+      }
+
       html {
         overflow-y: scroll;
         height: 100%;
@@ -40,7 +45,7 @@
       <div class="row">
         <div class="col">
           <br>
-          <h1 style="font-size: 40pt">Fallout 4 Weapon Stats<img src="assets/vaultboy(new).png" style="height: 80px; width: height; padding-left: 15px"></h1>
+          <h1 style="font-size: 45pt; font-family: overseer">Fallout 4 Weapon Stats<img src="assets/vaultboy(new).png" style="height: 80px; width: height; padding-left: 15px"></h1>
           <p><small>Please note, some weapons add radiation or elemental damage. This will be listed in the description at some point. All damage is combined for now, save for radiation, since it doesn't deal direct damage.</small></p>
           <hr>
           <p>
@@ -58,16 +63,16 @@
       </div>
       <div class="row">
         <div class="col">
-          <div id="statDiv"></div>
+          <div id="statDiv">(when you select a weapon, stats will appear here)</div>
         </div>
         <div class="col">
           <br>
-          <div id="modDiv"></div>
+          <div id="modDiv">(when you select a weapon, mods will appear here)</div>
         </div>
       </div>
       <div class="row">
         <div class="col"><hr><br>
-          <p><small>| Created by Jasper H. 2019 | Site is not affiliated with Bethesda Game Studios |</small></p>
+          <p><small>| Created by Jasper H. 2019 | Shout out to pixelsagas.com for the amazing font | Not in any way affiliated with Bethesda Game Studios |</small></p>
         </div>
       </div>
     </div>
@@ -132,7 +137,7 @@
             tempdiv.setAttribute('class', 'customDiv');
             var lowercaseName = baseObj[i];
             var uppercaseName = lowercaseName[0].toUpperCase() + lowercaseName.substring(1);
-            tempdiv.innerHTML = uppercaseName + ':&nbsp;';
+            tempdiv.innerHTML = uppercaseName + ':&nbsp;&nbsp;';
             var inp = document.createElement('input');
             inp.setAttribute('value', doc.base[baseObj[i]]);
             inp.setAttribute('id', baseObj[i]);
@@ -145,7 +150,7 @@
             // CREATE CUSTOM DIV
             var custDiv = document.createElement('div');
             custDiv.setAttribute('class', 'customDiv');
-            custDiv.innerHTML = keys[k] + ':&nbsp;';
+            custDiv.innerHTML = keys[k] + ':&nbsp;&nbsp;';
             // CREATE SELECT ELEMENT
             var selTemp = document.createElement('select');
             // DEFINE SOME VALUES FROM JSON
@@ -164,8 +169,15 @@
               // ADD EACH TO THE DIV
               selTemp.add(tempOpt);
             }
+            // CREATE BUTTON FOR DESCRIPTION
+            /*
+            var but = document.createElement('button');
+            but.innerHTML = 'Details';
+            but.setAttribute('onclick', '');
+            */
             // PUSH THE DROP/S
             custDiv.appendChild(selTemp);
+            custDiv.appendChild();
             dropDiv.appendChild(custDiv);
           }
         });
