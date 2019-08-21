@@ -4,14 +4,14 @@
     <title>Fo4 Weapon Stats</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
-    <link rel="icon" href="assets/favicon.png">
+    <link rel="icon" href="DISABLEDassets/favicon.png">
     <link rel="stylesheet" href="vendor/bootstrap.css">
     <style type="text/css">
 
       html {
         overflow-y: scroll;
         height: 100%;
-        width: 100%
+        width: 100%;
       }
 
       .customDiv {
@@ -19,10 +19,12 @@
       }
 
       input, select {
-        border: 1px solid #ccc;
-        border-radius: 4px;
+        color: #00ff00;
+        background-color: #303030;
+        border: 2px solid black;
+        border-radius: 6px;
         box-sizing: border-box;
-        padding: 4px 6px;
+        padding: 2px 6px;
       }
 
       hr {
@@ -32,15 +34,18 @@
     </style>
   </head>
 
-  <body onbeforeunload="exitFunc()">
+  <body onbeforeunload="exitFunc()" style="padding-bottom: 30px">
 
     <div class="container">
       <div class="row">
-
         <div class="col">
           <br>
-          <h1>Fallout 4 Weapon Stats</h1>
+          <h1 style="font-size: 40pt">Fallout 4 Weapon Stats<img src="DISABLEDassets/vaultboy(new).png" style="height: 80px; width: height; padding-left: 15px"></h1>
           <p><small>Please note, some weapons add radiation or elemental damage. This will be listed in the description at some point. All damage is combined for now, save for radiation, since it doesn't deal direct damage.</small></p>
+          <hr>
+          <p>
+            Weapon files take a while to put together, due to all the mods having different effects on every weapon. Since there is no consistency, everything is manual. I'm in the process of updating files so that there will be damage type fields for all weapons.<br><br>If anyone wants a specific weapon added, email me at <a style="color: blue">fo4stats@gmail.com</a>.
+          </p>
           <hr>
           <p>
             Weapon:&nbsp;
@@ -49,19 +54,25 @@
             </select>
           </p>
           <hr>
-          <div id="modDivs"></div>
         </div>
-
+      </div>
+      <div class="row">
+        <div class="col">
+          <div id="statDiv"></div>
+        </div>
         <div class="col">
           <br>
-          <p>
-            Weapon files take a while to put together, due to all the mods having different effects on every weapon. Since there is no consistency, everything is manual.<br><br>If anyone wants a specific weapon added, email me at <a style="color: blue">fo4stats@gmail.com</a>.
-          </p>
-          <div id="descDiv">PLACEHOLDER FOR DESCRIPTIONS/PREFIXES/ETC</div>
+          <div id="modDiv"></div>
         </div>
-
+      </div>
+      <div class="row">
+        <div class="col"><hr><br>
+          <p><small>| Created by Jasper H. 2019 |</small></p>
+        </div>
       </div>
     </div>
+
+    <!-- Script tags will be updated with url sources eventually, but for now, I need to sometimes develop in areas without wifi -->
 
     <script src="vendor/jquery-3.4.1.min.js"> </script>
     <script src="vendor/bootstrap.bundle.js"> </script>
@@ -102,9 +113,11 @@
 
       function newWeapon(){
         // CLEAR DIV
-        document.getElementById('modDivs').innerHTML = '';
+        document.getElementById('statDiv').innerHTML = '';
+        document.getElementById('modDiv').innerHTML = '';
         var weaponID = document.getElementById('weaponChoice').value;
-        var dropDiv = document.getElementById('modDivs');
+        var dropDiv = document.getElementById('modDiv');
+        var statDiv = document.getElementById('statDiv')
         local.get(weaponID).then(function(doc){
           // SET GLOBALDOC WHICH IS USED BY OTHER FUNCTIONS
           globaldoc = doc;
@@ -125,7 +138,7 @@
             inp.setAttribute('id', baseObj[i]);
             inp.setAttribute('readonly', true);
             tempdiv.appendChild(inp);
-            dropDiv.appendChild(tempdiv);
+            statDiv.appendChild(tempdiv);
           }
           // CREATE DROPDOWNS FOR MODS
           for(k=0;k<keys.length;k++){
