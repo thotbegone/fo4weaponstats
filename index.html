@@ -44,8 +44,7 @@
   </head>
 
   <body onbeforeunload="exitFunc()" style="padding-bottom: 30px">
-
-    <div class="container">
+    <div class="container" id="mainBody">
       <div class="row">
         <div class="col">
           <br>
@@ -165,7 +164,7 @@
             // Assign select id of barrel/muzzle/receiver etc
             selTemp.setAttribute('id', keys[k]);
             selTemp.setAttribute('data-mod', currModKeys[0]);
-            selTemp.setAttribute('onchange', 'valChange(this.id, this.value, this.dataset.mod)')
+            selTemp.setAttribute('onchange', 'valChange(this.id, this.value, this.dataset.mod), descChange(this.id, this.value)');
             // LOOP THROUGH ALL ENTRIES IN THE MODS
             for(v=0;v<currModKeys.length;v++){
               var tempOpt = document.createElement('option');
@@ -174,16 +173,18 @@
               // ADD EACH TO THE DIV
               selTemp.add(tempOpt);
             }
-            // CREATE BUTTON FOR DESCRIPTION
-            /*
-            var but = document.createElement('button');
-            but.innerHTML = 'Details';
-            but.setAttribute('onclick', '');
-            */
+            // CREATE DESCRIPTION
+            var des = document.createElement('div');
+            var tempid = keys[k] + 'description';
+            des.setAttribute('id', tempid);
             // PUSH THE DROP/S
             custDiv.appendChild(selTemp);
+            custDiv.appendChild(des);
             // custDiv.appendChild(but);
             dropDiv.appendChild(custDiv);
+            for(p=0;p<currModKeys.length;p++){
+              descChange(keys[k],currModKeys[p]);
+            }
           }
         });
       }
@@ -232,6 +233,14 @@
         }
         // RETURN TRUE TO SATISFY THE AWAIT
         return true;
+      }
+
+      function descChange(id, value){
+        console.log('newFunc', id, value);
+        var newid = id + 'description';
+        console.log('NEWID', newid);
+        var temp = globaldoc.modifications[id][value];
+        document.getElementById(newid).innerHTML = temp.description;
       }
 
     </script>
