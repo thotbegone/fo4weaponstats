@@ -23,6 +23,17 @@
         padding-bottom: 10px;
       }
 
+      .customDiv div {
+        background-color: #303030;
+        color: #00ff00;
+        border: 2px solid black;
+        border-radius: 6px;
+        box-sizing: border-box;
+        padding: 2px 6px;
+        margin-top: 8px;
+        margin-bottom: 10px
+      }
+
       input, select {
         color: #00ff00;
         background-color: #303030;
@@ -74,7 +85,7 @@
       </div>
       <div class="row">
         <div class="col"><hr><br>
-          <p><small>- Created by Jasper H. 2019 | Shout out to pixelsagas.com for the amazing font | Not in any way affiliated with Bethesda Game Studios -</small></p>
+          <p><small>- Created by Jasper 2019 | Shout out to pixelsagas.com for the amazing font | Not in any way affiliated with Bethesda Game Studios -</small></p>
         </div>
       </div>
     </div>
@@ -236,9 +247,7 @@
       }
 
       function descChange(id, value){
-        console.log('newFunc', id, value);
         var newid = id + 'description';
-        console.log('NEWID', newid);
         var temp = globaldoc.modifications[id][value];
         document.getElementById(newid).innerHTML = temp.description;
       }
